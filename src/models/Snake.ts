@@ -1,7 +1,7 @@
 import { observable, computed, action } from 'mobx'
 import { IPosition, IDna, Direction } from '../types'
 
-import { randomFromInterval, positionInDirection } from '../utils'
+import { randomFromInterval, positionInDirection, lerpColor } from '../utils'
 import { Pit } from './Pit';
 
 
@@ -18,6 +18,10 @@ export class Snake {
       snakeAttraction: randomFromInterval(-1, 1),
       longberryAttraction: randomFromInterval(-1, 1)
     };
+  }
+
+  @computed get color (): string {
+    return lerpColor('#f06565', '#bdF271', this.health);
   }
 
   @computed get head (): IPosition {

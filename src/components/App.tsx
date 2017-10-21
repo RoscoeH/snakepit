@@ -88,6 +88,7 @@ class App extends Component {
                 key={i}
                 size={pit.cellSize}
                 segments={snake.segments}
+                color={snake.color}
               />
             )}
           </g>

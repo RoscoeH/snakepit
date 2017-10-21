@@ -22,22 +22,42 @@ const directions = [
 
 export class Population {
   size = 16;
+  stepEnergy = 0.01;
+  berryCount = 6;
   population: Snake[] = [];
   berries: IBerry[] = []; 
 
   constructor(private pit: Pit) {
     this.generateRandomSnakes(this.size);
-    this.generateRandomFood(10, LongBerry);
+    this.generateRandomFood(this.berryCount, LongBerry);
 
     console.log(this.berries);
-    // setInterval(() => this.step(), 500);
+    setInterval(() => this.step(), 100);
   }
 
   step() {
     this.population.forEach(snake => {
+      // Take a step and maybe eat a berry
       const direction = this.pickDirectionForSnake(snake);
       if (direction !== null) {
-        snake.move(direction);
+        // Check if there's a berry at the new position
+        const newPosition = positionInDirection(snake.head, direction);
+        const berryAtNewPoisiton = this.berries.find(berry => positionsEqual(berry, newPosition));
+
+        if (berryAtNewPoisiton) {
+          berryAtNewPoisiton.effect(snake);
+          this.berries.splice(this.berries.indexOf(berryAtNewPoisiton), 1);
+          this.generateRandomFood(1, LongBerry);
+        } else {
+          snake.move(direction);
+        }
+
+      }
+
+      // Deduct health
+      snake.health -= this.stepEnergy;
+      if (snake.health <= 0) {
+        this.population.splice(this.population.indexOf(snake), 1);
       }
     })
   }
@@ -75,27 +95,15 @@ export class Population {
     });
 
     // console.log('dist', closest);
-    
-    // Scale distance vectors based on genetics
-    const scaledClosestSnake = {
-      x: closestSnake.x * snake.dna.snakeAttraction,
-      y: closestSnake.y * snake.dna.snakeAttraction
-    };
-    
-    const scaledClosestLongBerry = {
-      x: closestLongBerry.x * snake.dna.longberryAttraction,
-      y: closestLongBerry.y * snake.dna.longberryAttraction
-    };
-    
-    const desiredVector = {
-      x: scaledClosestSnake.x + scaledClosestLongBerry.x,
-      y: scaledClosestSnake.y + scaledClosestLongBerry.y
-    }
-    console.log('me', snake.head.x, snake.head.y);
-    console.log('them', closestSnake.x, closestSnake.y);
-    console.log('berry', closestLongBerry.x, closestLongBerry.y);
+    const closestEntities = [closestSnake, closestLongBerry];
+    const entityAttractions = [snake.dna.snakeAttraction, snake.dna.longberryAttraction];
 
-
+    const desiredVector = closestEntities.reduce((prev, entity, i) =>
+      entity
+        ? { x: prev.x + entity.x * entityAttractions[i], y: prev.y + entity.y * entityAttractions[i] }
+        : prev,
+        { x: 0, y: 0 }
+    );
 
     const desiredAngle = Math.atan2(desiredVector.y, desiredVector.x) * 180 / Math.PI;
 

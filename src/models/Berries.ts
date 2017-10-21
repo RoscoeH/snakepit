@@ -17,7 +17,7 @@ export class LongBerry implements IBerry {
   }
 
   effect(snake: Snake) {
-    snake.health += this.nutritionalValue;
-    snake.addToHead(positionInDirection(snake.head, snake.direction));
+    snake.health = Math.min(snake.health + this.nutritionalValue, 1);
+    snake.addToHead({ x: this.x, y: this.y });
   }
 }
