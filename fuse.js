@@ -6,6 +6,7 @@ const {
   BabelPlugin,
   QuantumPlugin,
   WebIndexPlugin,
+  JSONPlugin,
   Sparky
 } = require('fuse-box');
 
@@ -22,6 +23,7 @@ Sparky.task('config', () => {
     experimentalFeatures: true,
     plugins: [
       EnvPlugin({ NODE_ENV: isProduction ? 'production' : 'development' }),
+      JSONPlugin(),
       SVGPlugin(),
       CSSPlugin(),
       WebIndexPlugin({
