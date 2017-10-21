@@ -23,3 +23,8 @@ export interface IBerry extends IPosition {
   color: string,
   effect(snake: Snake): void;
 }
+
+export interface IDna {
+  snakeAttraction: number;
+  longberryAttraction: number;
+}

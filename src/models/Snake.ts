@@ -1,5 +1,5 @@
 import { observable, computed, action } from 'mobx'
-import { IPosition, Direction } from '../types'
+import { IPosition, IDna, Direction } from '../types'
 
 import { randomFromInterval, positionInDirection } from '../utils'
 import { Pit } from './Pit';
@@ -7,15 +7,17 @@ import { Pit } from './Pit';
 
 
 export class Snake {
+  dna: IDna;
   @observable segments: Array<IPosition> = [];
   @observable health = 1;
 
-  snakeAttraction: number = randomFromInterval(-1, 1);
-  // foodAttraction: number = Math.random();
-  // poisonAttraction: number = Math.random();
-
   constructor (public id: number, private pit: Pit, positions: Array<IPosition>) {
-    positions.forEach(position => this.addToTail(position))
+    positions.forEach(position => this.addToTail(position));
+
+    this.dna = {
+      snakeAttraction: randomFromInterval(-1, 1),
+      longberryAttraction: randomFromInterval(-1, 1)
+    };
   }
 
   @computed get head (): IPosition {
