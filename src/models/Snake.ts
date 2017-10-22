@@ -11,13 +11,15 @@ export class Snake {
   @observable segments: Array<IPosition> = [];
   @observable health = 1;
 
-  constructor (public id: number, private pit: Pit, positions: Array<IPosition>) {
+  constructor (public id: number | string, private pit: Pit, positions: Array<IPosition>, dna?: IDna) {
     positions.forEach(position => this.addToTail(position));
 
-    this.dna = {
+    this.dna = dna || {
       snakeAttraction: randomFromInterval(-1, 1),
       longberryAttraction: randomFromInterval(-1, 1),
-      shortberryAttraction: randomFromInterval(-1, 1)
+      shortberryAttraction: randomFromInterval(-1, 1),
+      deathberryAttraction: randomFromInterval(-1, 1),
+      eggRate: randomFromInterval(0, 0.05)
     };
   }
 
@@ -27,6 +29,10 @@ export class Snake {
 
   @computed get head (): IPosition {
     return (this.segments.length > 0) ? this.segments[0] : null
+  }
+
+  @computed get tail (): IPosition {
+    return (this.segments.length > 0) ? this.segments[this.segments.length - 1] : null;
   }
 
   @computed get direction (): Direction {

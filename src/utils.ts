@@ -108,6 +108,16 @@ export function lerpColor(a, b, amount) {
   return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
 }
 
+
+export function uuid(){
+  return(""+1e7+-1e3+-4e3+-8e3+-1e11).replace(
+    /1|0/g,
+    function(){
+      return (0 | Math.random() * 16).toString(16)
+    }
+  )
+}
+
 // const d = [
 //   Direction.NORTH,
 //   Direction.EAST,

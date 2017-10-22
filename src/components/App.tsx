@@ -9,6 +9,7 @@ import { Population } from '../models/population';
 import Block from './Block';
 import Berry from './Berry';
 import Snake from './Snake';
+import Egg from './Egg';
 
 const pit = new Pit(level);
 const population = new Population(pit);
@@ -79,6 +80,16 @@ class App extends Component {
                 y={berry.y}
                 size={pit.cellSize}
                 color={berry.color}
+              />
+            )}
+
+            {/* Eggs */}
+            {population.eggs.map((egg, i) =>
+              <Egg
+                key={i}
+                x={egg.x}
+                y={egg.y}
+                size={pit.cellSize}
               />
             )}
 

@@ -39,3 +39,20 @@ export class ShortBerry implements IBerry {
     snake.removeFromTail();
   }
 }
+
+
+export class DeathBerry implements IBerry {
+  nutritionalValue = -0.25;
+  color = '#FC5449';
+  @observable x: number;
+  @observable y: number;
+
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+  }
+
+  effect(snake: Snake) {
+    snake.health = Math.min(snake.health + this.nutritionalValue, 1);
+  }
+}

@@ -28,4 +28,11 @@ export interface IDna {
   snakeAttraction: number;
   longberryAttraction: number;
   shortberryAttraction: number;
+  deathberryAttraction: number;
+  eggRate: number;
+}
+
+export interface IEgg extends IPosition {
+  health: number;
+  dna: IDna;
 }

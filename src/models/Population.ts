@@ -1,17 +1,18 @@
-import { observable, action } from 'mobx';
+import { observable, action, computed } from 'mobx';
 
 import { Snake } from './Snake'
 import { Pit } from './Pit';
-import { IPosition, Direction, IBerry } from '../types';
+import { IPosition, Direction, IBerry, IEgg } from '../types';
 import {
   positionsEqual,
   positionInDirection,
   vectorDistance,
   positionDistance,
   randomIntFromInterval,
-  closestDirection
+  closestDirection,
+  uuid
 } from '../utils';
-import { LongBerry, ShortBerry } from './Berries';
+import { LongBerry, ShortBerry, DeathBerry } from './Berries';
 
 
 const directions = [
@@ -22,25 +23,55 @@ const directions = [
 ];
 
 const berries = [
-  LongBerry,
-  ShortBerry
+  { berry: LongBerry, spawnChance: 0.5 },
+  { berry: ShortBerry, spawnChance: 0.3 },
+  { berry: DeathBerry, spawnChance: 0.2 }
 ];
-
 
 export class Population {
   size = 16;
   stepEnergy = 0.02;
   berryCount = 10;
+  berrySpawnRate = 0.5;
+  maxDeathberry = 20;
   @observable population: Snake[] = [];
-  @observable berries: IBerry[] = []; 
+  @observable berries: IBerry[] = [];
+  @observable eggs: IEgg[] =[]; 
 
   constructor(private pit: Pit) {
     this.generateRandomSnakes(this.size);
-    this.generateRandomFood(this.berryCount, LongBerry);
-    this.generateRandomFood(this.berryCount, ShortBerry);
+    this.generateRandomFood(this.berryCount, null);
+  }
+
+  @computed get deathberryCount() {
+    return this.berries.filter(berry => berry instanceof DeathBerry).length;
   }
 
   @action step() {
+    this.updateSnakes();
+    this.updateEggs();
+
+    if (Math.random() < this.berrySpawnRate) {
+      this.generateRandomFood(1, null);
+    }
+  }
+
+  @action updateEggs() {
+    this.eggs.forEach(egg => {
+      egg.health -= this.stepEnergy;
+      if (egg.health <= 0) {
+        this.eggs.splice(this.eggs.indexOf(egg), 1);
+        this.population.push(
+          new Snake(uuid(), this.pit, [
+            { x: egg.x, y: egg.y },
+            { x: egg.x, y: egg.y }
+          ], egg.dna)
+        );
+      }
+    });
+  }
+
+  @action updateSnakes() {
     this.population.forEach(snake => {
       // Take a step and maybe eat a berry
       const direction = this.pickDirectionForSnake(snake);
@@ -53,9 +84,6 @@ export class Population {
           berryAtNewPoisiton.effect(snake);
           this.berries.splice(this.berries.indexOf(berryAtNewPoisiton), 1);
 
-          // Generate random berry at random location
-          this.generateRandomFood(1, berries[randomIntFromInterval(0, berries.length - 1)]);
-
           if (!(berryAtNewPoisiton instanceof LongBerry)) {
             snake.move(direction);
           }
@@ -65,12 +93,22 @@ export class Population {
 
       }
 
+      // Maybe lay an egg
+      if (snake.segments.length > 2 && Math.random() < snake.dna.eggRate) {
+        this.eggs.push({
+          x: snake.tail.x,
+          y: snake.tail.y,
+          health: 0.1,
+          dna: snake.dna
+        });
+      }
+
       // Deduct health
       snake.health -= this.stepEnergy;
       if (snake.health <= 0) {
         this.population.splice(this.population.indexOf(snake), 1);
       }
-    })
+    });
   }
 
   pickDirectionForSnake(snake: Snake): Direction {
@@ -95,8 +133,10 @@ export class Population {
     // Find the closest longberry
     let closestLongberry: IPosition;
     let closestShortberry: IPosition;
+    let closestDeathberry: IPosition;
     let closestL = Infinity;
     let closestS = Infinity;
+    let closestD = Infinity;
 
     this.berries.forEach((berry) => {
       const distance = positionDistance(snake.head, berry);
@@ -107,13 +147,17 @@ export class Population {
       } else if (berry instanceof ShortBerry && distance < closestS) {
         closestShortberry = vector;
         closestS = distance;
+      } else if (berry instanceof DeathBerry && distance < closestD) {
+        closestDeathberry = vector;
+        closestD = distance;
       }
     });
 
     let closestEntities = [
       closestSnake,
       closestLongberry,
-      closestShortberry
+      closestShortberry,
+      closestDeathberry
     ];
 
     // Normalise the vectors
@@ -129,10 +173,9 @@ export class Population {
     const entityAttractions = [
       snake.dna.snakeAttraction,
       snake.dna.longberryAttraction,
-      snake.dna.shortberryAttraction
+      snake.dna.shortberryAttraction,
+      snake.dna.deathberryAttraction
     ];
-
-    // console.log(snake.head.x, snake.head.y, closestEntities, entityAttractions);
 
     const desiredVector = closestEntities.reduce((prev, entity, i) =>
       entity
@@ -160,11 +203,19 @@ export class Population {
   snakeAt(position: IPosition): boolean {
     return this.population.some((snake) => {
       return snake.segments.some((segment) => positionsEqual(position, segment))
-    })
+    });
+  }
+
+  berryAt(position: IPosition): boolean {
+    return this.berries.some(berry => positionsEqual(position, berry));
+  }
+
+  eggAt(position: IPosition): boolean {
+    return this.eggs.some(egg => positionsEqual(position, egg));
   }
 
   cellOccupied(position: IPosition): boolean {
-    return this.pit.blockAt(position) || this.snakeAt(position);
+    return this.pit.blockAt(position) || this.snakeAt(position) || this.eggAt(position);
   }
 
   findEmptyPosition(): IPosition {
@@ -172,7 +223,12 @@ export class Population {
     let count = 0;
 
     // Find a suitable head position
-    while (!position || this.cellOccupied(position) && count < 10000) {
+    while (
+      !position ||
+      this.cellOccupied(position) ||
+      this.berryAt(position)
+      && count < 10000
+    ) {
       position = {
         x: Math.floor(Math.random() * this.pit.width),
         y: Math.floor(Math.random() * this.pit.height)
@@ -188,7 +244,7 @@ export class Population {
       const direction = directions[i];
       const maybeEmptyPos = positionInDirection(position, direction);
 
-      if (!this.cellOccupied(maybeEmptyPos)) {
+      if (!this.cellOccupied(maybeEmptyPos) && !this.berryAt(maybeEmptyPos)) {
         emptyPos = maybeEmptyPos;
         break;
       }
@@ -206,16 +262,34 @@ export class Population {
       ];
 
       if (segments) {
-        this.population.push(new Snake(this.population.length, null, segments));
+        this.population.push(new Snake(uuid(), null, segments));
       }
     }
   }
 
   generateRandomFood(n: number, berryType: new (x: number, y: number) => IBerry) {
+    let berry = berryType;
+
     for (let i = 0; i < n; i++) {
+      if (!berryType) {
+        berry = this.pickRandomBerry();
+      }
+
       // Find position for berry
       const position = this.findEmptyPosition();
-      this.berries.push(new berryType(position.x, position.y));
+      this.berries.push(new berry(position.x, position.y));
+    }
+  }
+
+  pickRandomBerry(): new (x: number, y: number) => IBerry {
+    let chance = Math.random();
+    for (let i = 0; i < berries.length; i++) {
+      const { berry, spawnChance } = berries[i];
+      if (chance < spawnChance) {
+        return berry;
+      }
+
+      chance -= spawnChance;
     }
   }
 }
