@@ -42,7 +42,7 @@ export class ShortBerry implements IBerry {
 
 
 export class DeathBerry implements IBerry {
-  nutritionalValue = -0.25;
+  nutritionalValue = -0.3;
   color = '#FC5449';
   @observable x: number;
   @observable y: number;

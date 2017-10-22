@@ -24,7 +24,7 @@ export class Snake {
   }
 
   @computed get color (): string {
-    return lerpColor('#fc5449', '#bdF271', this.health);
+    return lerpColor('#A93831', /*'#fc5449',*/ '#bdF271', this.health);
   }
 
   @computed get head (): IPosition {

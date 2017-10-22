@@ -2,13 +2,14 @@ import { observable, action, computed } from 'mobx';
 
 import { Snake } from './Snake'
 import { Pit } from './Pit';
-import { IPosition, Direction, IBerry, IEgg } from '../types';
+import { IPosition, Direction, IBerry, IEgg, IDna } from '../types';
 import {
   positionsEqual,
   positionInDirection,
   vectorDistance,
   positionDistance,
   randomIntFromInterval,
+  randomFromInterval,
   closestDirection,
   uuid
 } from '../utils';
@@ -27,8 +28,12 @@ export class Population {
   size = 16;
   stepEnergy = 0.02;
   berryCount = 10;
-  berrySpawnRate = 0.5;
+  berrySpawnRate = 0.2;
   maxDeathberry = 10;
+  eggHealth = 0.3;
+  adultLength = 4;
+  mutationRate = 0.05;
+  
   @observable population: Snake[] = [];
   @observable berries: IBerry[] = [];
   @observable eggs: IEgg[] =[]; 
@@ -89,21 +94,45 @@ export class Population {
       }
 
       // Maybe lay an egg
-      if (snake.segments.length > 2 && Math.random() < snake.dna.eggRate) {
+      if (snake.segments.length > this.adultLength && Math.random() < snake.dna.eggRate) {
         this.eggs.push({
           x: snake.tail.x,
           y: snake.tail.y,
-          health: 0.2,
-          dna: snake.dna
+          health: this.eggHealth,
+          dna: this.mutateDna(snake.dna)
         });
       }
 
       // Deduct health
       snake.health -= this.stepEnergy;
       if (snake.health <= 0) {
+        // Kill snake and leave food
         this.population.splice(this.population.indexOf(snake), 1);
+        snake.segments.forEach(segment => {
+          const berry = this.pickRandomBerry([
+            { berry: LongBerry, spawnChance: 5 },
+            { berry: ShortBerry, spawnChance: 3 },
+            { berry: DeathBerry, spawnChance: 2 }
+          ]);
+          this.berries.push(new berry(segment.x, segment.y));
+        });
       }
     });
+  }
+
+  mutateDna(dna: IDna): IDna {
+    const mutatedDna = { ... dna };
+
+    if (Math.random() < this.mutationRate) {
+      const genes = Object.keys(dna);
+      const geneKey = genes[randomIntFromInterval(0, genes.length - 1)];
+      const gene = dna[geneKey];
+      const d = [-1, 1];
+      mutatedDna[geneKey] = gene + (gene * randomFromInterval(0.01, 0.5) * d[randomIntFromInterval(0, 1)]);
+    }
+
+
+    return mutatedDna;
   }
 
   pickDirectionForSnake(snake: Snake): Direction {
@@ -282,7 +311,7 @@ export class Population {
     }
   }
 
-  pickRandomBerry(berryList: (new (x: number, y: number) => IBerry)[]): new (x: number, y: number) => IBerry {
+  pickRandomBerry(berryList: any): new (x: number, y: number) => IBerry {
     let chance = Math.random();
 
     // Normalise berry chances
