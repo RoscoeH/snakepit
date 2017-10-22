@@ -283,6 +283,12 @@ export class Population {
 
   pickRandomBerry(): new (x: number, y: number) => IBerry {
     let chance = Math.random();
+    let berryList = berries;
+
+    if (this.deathberryCount >= this.maxDeathberry) {
+      berryList = berries.filter(berry => berry.berry !== DeathBerry);
+    }
+
     for (let i = 0; i < berries.length; i++) {
       const { berry, spawnChance } = berries[i];
       if (chance < spawnChance) {
