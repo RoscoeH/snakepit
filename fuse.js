@@ -56,6 +56,6 @@ Sparky.task('prod-env', ['clean'], () => {
 });
 Sparky.task('dist', ['prod-env', 'config'], () => {
   // comment out to prevent dev server from running (left for the demo)
-  fuse.dev();
+  // fuse.dev();
   return fuse.run();
 });

@@ -22,18 +22,13 @@ const directions = [
   Direction.WEST
 ];
 
-const berries = [
-  { berry: LongBerry, spawnChance: 0.5 },
-  { berry: ShortBerry, spawnChance: 0.3 },
-  { berry: DeathBerry, spawnChance: 0.2 }
-];
 
 export class Population {
   size = 16;
   stepEnergy = 0.02;
   berryCount = 10;
   berrySpawnRate = 0.5;
-  maxDeathberry = 20;
+  maxDeathberry = 10;
   @observable population: Snake[] = [];
   @observable berries: IBerry[] = [];
   @observable eggs: IEgg[] =[]; 
@@ -269,10 +264,19 @@ export class Population {
 
   generateRandomFood(n: number, berryType: new (x: number, y: number) => IBerry) {
     let berry = berryType;
+    const berries =  [
+      { berry: LongBerry, spawnChance: 5 },
+      { berry: ShortBerry, spawnChance: 3 },
+      { berry: DeathBerry, spawnChance: 2 }
+    ];
+
+    if (this.deathberryCount >= this.maxDeathberry) {
+      berries.pop();
+    }
 
     for (let i = 0; i < n; i++) {
       if (!berryType) {
-        berry = this.pickRandomBerry();
+        berry = this.pickRandomBerry(berries);
       }
 
       // Find position for berry
@@ -281,21 +285,23 @@ export class Population {
     }
   }
 
-  pickRandomBerry(): new (x: number, y: number) => IBerry {
+  pickRandomBerry(berryList: (new (x: number, y: number) => IBerry)[]): new (x: number, y: number) => IBerry {
     let chance = Math.random();
     let berryList = berries;
 
-    if (this.deathberryCount >= this.maxDeathberry) {
-      berryList = berries.filter(berry => berry.berry !== DeathBerry);
-    }
+    // Normalise berry chances
+    const totalChances = berryList
+      .map(berry => berry.spawnChance)
+      .reduce((prev, spawnChance) => prev + spawnChance, 0);
 
     for (let i = 0; i < berries.length; i++) {
       const { berry, spawnChance } = berries[i];
-      if (chance < spawnChance) {
+      const scaledChance = spawnChance / totalChances
+      if (chance < scaledChance) {
         return berry;
       }
 
-      chance -= spawnChance;
+      chance -= scaledChance;
     }
   }
 }
