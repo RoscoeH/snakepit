@@ -55,7 +55,6 @@ Sparky.task('prod-env', ['clean'], () => {
   isProduction = true;
 });
 Sparky.task('dist', ['prod-env', 'config'], () => {
-  // comment out to prevent dev server from running (left for the demo)
-  // fuse.dev();
+  Sparky.src('src/favicon.ico').dest('dist/'); // TODO fix favicon
   return fuse.run();
 });

@@ -93,7 +93,7 @@ export class Population {
         this.eggs.push({
           x: snake.tail.x,
           y: snake.tail.y,
-          health: 0.1,
+          health: 0.2,
           dna: snake.dna
         });
       }
@@ -181,13 +181,10 @@ export class Population {
 
     const desiredAngle = Math.atan2(desiredVector.y, desiredVector.x) * 180 / Math.PI;
 
-    // console.log(snake.snakeAttraction, scaledClosestSnake)
-
     const availableDirections = directions.filter(direction =>
         !this.cellOccupied(positionInDirection(snake.head, direction))
     )
     if (availableDirections.length > 0) {
-      // console.log(availableDirections, desiredAngle);
       return closestDirection(availableDirections, desiredAngle);
     } else {
       return null;
@@ -287,15 +284,14 @@ export class Population {
 
   pickRandomBerry(berryList: (new (x: number, y: number) => IBerry)[]): new (x: number, y: number) => IBerry {
     let chance = Math.random();
-    let berryList = berries;
 
     // Normalise berry chances
     const totalChances = berryList
       .map(berry => berry.spawnChance)
       .reduce((prev, spawnChance) => prev + spawnChance, 0);
 
-    for (let i = 0; i < berries.length; i++) {
-      const { berry, spawnChance } = berries[i];
+    for (let i = 0; i < berryList.length; i++) {
+      const { berry, spawnChance } = berryList[i];
       const scaledChance = spawnChance / totalChances
       if (chance < scaledChance) {
         return berry;

@@ -40,7 +40,7 @@ class App extends Component {
             i !== 0 && <line
               key={i}
               stroke='white'
-              strokeWidth='2'
+              strokeWidth='3'
               opacity='0.25'
               x1={i * pit.cellSize}
               y1={pit.cellHeight}
@@ -52,7 +52,7 @@ class App extends Component {
             i !== 0 && <line
               key={i}
               stroke='white'
-              strokeWidth='2'              
+              strokeWidth='3'              
               opacity='0.25'
               x1={0}
               y1={i * pit.cellSize + pit.cellHeight}
