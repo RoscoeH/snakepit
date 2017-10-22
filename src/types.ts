@@ -27,4 +27,5 @@ export interface IBerry extends IPosition {
 export interface IDna {
   snakeAttraction: number;
   longberryAttraction: number;
+  shortberryAttraction: number;
 }

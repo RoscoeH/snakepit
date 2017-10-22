@@ -16,12 +16,13 @@ export class Snake {
 
     this.dna = {
       snakeAttraction: randomFromInterval(-1, 1),
-      longberryAttraction: randomFromInterval(-1, 1)
+      longberryAttraction: randomFromInterval(-1, 1),
+      shortberryAttraction: randomFromInterval(-1, 1)
     };
   }
 
   @computed get color (): string {
-    return lerpColor('#f06565', '#bdF271', this.health);
+    return lerpColor('#fc5449', '#bdF271', this.health);
   }
 
   @computed get head (): IPosition {
@@ -66,7 +67,7 @@ export class Snake {
   }
 
   @action removeFromTail (): Snake {
-    if (this.segments.length > 1) {
+    if (this.segments.length > 2) {
       this.segments.pop()
     }
     return this

@@ -1,3 +1,5 @@
+import { observable, action } from 'mobx';
+
 import { Snake } from './Snake'
 import { Pit } from './Pit';
 import { IPosition, Direction, IBerry } from '../types';
@@ -9,7 +11,7 @@ import {
   randomIntFromInterval,
   closestDirection
 } from '../utils';
-import { LongBerry } from './Berries';
+import { LongBerry, ShortBerry } from './Berries';
 
 
 const directions = [
@@ -19,23 +21,26 @@ const directions = [
   Direction.WEST
 ];
 
+const berries = [
+  LongBerry,
+  ShortBerry
+];
+
 
 export class Population {
   size = 16;
-  stepEnergy = 0.01;
-  berryCount = 6;
-  population: Snake[] = [];
-  berries: IBerry[] = []; 
+  stepEnergy = 0.02;
+  berryCount = 10;
+  @observable population: Snake[] = [];
+  @observable berries: IBerry[] = []; 
 
   constructor(private pit: Pit) {
     this.generateRandomSnakes(this.size);
     this.generateRandomFood(this.berryCount, LongBerry);
-
-    console.log(this.berries);
-    setInterval(() => this.step(), 100);
+    this.generateRandomFood(this.berryCount, ShortBerry);
   }
 
-  step() {
+  @action step() {
     this.population.forEach(snake => {
       // Take a step and maybe eat a berry
       const direction = this.pickDirectionForSnake(snake);
@@ -47,7 +52,13 @@ export class Population {
         if (berryAtNewPoisiton) {
           berryAtNewPoisiton.effect(snake);
           this.berries.splice(this.berries.indexOf(berryAtNewPoisiton), 1);
-          this.generateRandomFood(1, LongBerry);
+
+          // Generate random berry at random location
+          this.generateRandomFood(1, berries[randomIntFromInterval(0, berries.length - 1)]);
+
+          if (!(berryAtNewPoisiton instanceof LongBerry)) {
+            snake.move(direction);
+          }
         } else {
           snake.move(direction);
         }
@@ -82,21 +93,46 @@ export class Population {
       });
 
     // Find the closest longberry
-    let closestLongBerry: IPosition;
-    closest = Infinity;
+    let closestLongberry: IPosition;
+    let closestShortberry: IPosition;
+    let closestL = Infinity;
+    let closestS = Infinity;
 
     this.berries.forEach((berry) => {
       const distance = positionDistance(snake.head, berry);
       const vector = vectorDistance(snake.head, berry);
-      if (distance < closest){
-        closestLongBerry = vector;
-        closest = distance;
+      if (berry instanceof LongBerry && distance < closestL) {
+        closestLongberry = vector;
+        closestL = distance;
+      } else if (berry instanceof ShortBerry && distance < closestS) {
+        closestShortberry = vector;
+        closestS = distance;
       }
     });
 
-    // console.log('dist', closest);
-    const closestEntities = [closestSnake, closestLongBerry];
-    const entityAttractions = [snake.dna.snakeAttraction, snake.dna.longberryAttraction];
+    let closestEntities = [
+      closestSnake,
+      closestLongberry,
+      closestShortberry
+    ];
+
+    // Normalise the vectors
+    closestEntities = closestEntities.map(entity => {
+      if (entity) {
+        const magnitude = Math.sqrt(Math.pow(entity.x, 2) + Math.pow(entity.y, 2));
+        return (magnitude > 0)
+          ? { x: entity.x / magnitude, y: entity.y / magnitude }
+          : entity;
+      }
+    });
+
+    const entityAttractions = [
+      snake.dna.snakeAttraction,
+      snake.dna.longberryAttraction,
+      snake.dna.shortberryAttraction
+    ];
+
+    // console.log(snake.head.x, snake.head.y, closestEntities, entityAttractions);
 
     const desiredVector = closestEntities.reduce((prev, entity, i) =>
       entity

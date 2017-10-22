@@ -23,7 +23,7 @@ class App extends Component {
           width={pit.canvasWidth}
           height={pit.canvasHeight}
           viewBox={`0 0 ${pit.canvasWidth} ${pit.canvasHeight + pit.cellHeight}`}
-          onClick={() => population.step()}
+          onClick={() => setInterval(() => population.step(), 200)} //population.step()}
         >
           {/* Background */}
           <rect
