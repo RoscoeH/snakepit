@@ -23,20 +23,30 @@ const directions = [
   Direction.WEST
 ];
 
+interface IHistory {
+  name: string;
+  population: number;
+  lberryCount: number;
+  sberryCount: number;
+  dberryCount: number;
+}
+
 
 export class Population {
   size = 16;
   stepEnergy = 0.02;
   berryCount = 10;
-  berrySpawnRate = 0.2;
+  berrySpawnRate = 0.3;
   maxDeathberry = 10;
   eggHealth = 0.3;
   adultLength = 4;
   mutationRate = 0.05;
+  time = 0;
   
   @observable population: Snake[] = [];
   @observable berries: IBerry[] = [];
-  @observable eggs: IEgg[] =[]; 
+  @observable eggs: IEgg[] =[];
+  @observable history: IHistory[] = [];
 
   constructor(private pit: Pit) {
     this.generateRandomSnakes(this.size);
@@ -48,12 +58,23 @@ export class Population {
   }
 
   @action step() {
+    this.history.push({
+      name: `${this.time}`,
+      population: this.population.length,
+      longBerries: this.berries.filter(berry => berry instanceof LongBerry).length,
+      shortBerries: this.berries.filter(berry => berry instanceof ShortBerry).length,
+      deathBerries: this.berries.filter(berry => berry instanceof DeathBerry).length,
+      eggs: this.eggs.length
+    });
+
     this.updateSnakes();
     this.updateEggs();
 
     if (Math.random() < this.berrySpawnRate) {
       this.generateRandomFood(1, null);
     }
+
+    this.time++;
   }
 
   @action updateEggs() {
