@@ -6,7 +6,7 @@ import { positionInDirection } from '../utils';
 
 
 export class LongBerry implements IBerry {
-  nutritionalValue = 0.5;
+  nutritionalValue = 0.1;
   color = '#5BBF54';
   @observable x: number;
   @observable y: number;
@@ -24,7 +24,7 @@ export class LongBerry implements IBerry {
 
 
 export class ShortBerry implements IBerry {
-  nutritionalValue = 0.1;
+  nutritionalValue = 0.5;
   color = '#51B7F8';
   @observable x: number;
   @observable y: number;

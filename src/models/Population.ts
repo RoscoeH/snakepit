@@ -36,10 +36,11 @@ export class Population {
   size = 16;
   stepEnergy = 0.02;
   berryCount = 10;
-  berrySpawnRate = 0.3;
+  berrySpawnRate = 0.5;
   maxDeathberry = 10;
+  maxBerries = 20;
   eggHealth = 0.3;
-  adultLength = 4;
+  adultLength = 3;
   mutationRate = 0.05;
   time = 0;
   
@@ -70,7 +71,7 @@ export class Population {
     this.updateSnakes();
     this.updateEggs();
 
-    if (Math.random() < this.berrySpawnRate) {
+    if (this.berries.length < this.maxBerries && Math.random() < this.berrySpawnRate) {
       this.generateRandomFood(1, null);
     }
 

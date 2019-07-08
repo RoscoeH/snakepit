@@ -43,7 +43,7 @@ class App extends Component {
           width={pit.canvasWidth}
           height={pit.canvasHeight}
           viewBox={`0 0 ${pit.canvasWidth} ${pit.canvasHeight + pit.cellHeight}`}
-          onClick={() => setInterval(() => population.step(), 250)} //population.step()}
+          onClick={() => setInterval(() => population.step(), 500)} //population.step()}
         >
           {/* Background */}
           <rect
@@ -123,16 +123,16 @@ class App extends Component {
             )}
           </g>
         </svg>
-        <div className={`charts ${population.history.length < 2 ? 'hidden' : ''}`}>
+        <div className={`charts ${population.history.length < 4 ? 'hidden' : ''}`}>
           <ResponsiveContainer width="100%" height={256}>
             <LineChart
               data={population.history.slice()}
               margin={{ top: 40, right: 0, left: 0, bottom: 0 }}            
             >
               <Line dataKey="population" stroke="#bdF271" />
-              <Line dataKey="longBerries" stroke="#5BBF54" />
-              <Line dataKey="shortBerries" stroke="#51B7F8" />
-              <Line dataKey="deathBerries" stroke="#FC5449" />
+              {/* <Line dataKey="longBerries" stroke="#5BBF54" /> */}
+              {/* <Line dataKey="shortBerries" stroke="#51B7F8" /> */}
+              {/* <Line dataKey="deathBerries" stroke="#FC5449" /> */}
               <Line dataKey="eggs" stroke="white" />
             </LineChart>
           </ResponsiveContainer>

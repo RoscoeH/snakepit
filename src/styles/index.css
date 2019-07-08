@@ -23,6 +23,7 @@ body {
 
 .charts {
     width: 100%;
+    transition: opacity 0.5s ease-in;
 }
 
 .hidden {
