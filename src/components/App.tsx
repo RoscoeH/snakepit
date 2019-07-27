@@ -14,7 +14,7 @@ import {
 
 import * as level from "../maps/level.json";
 import Pit from "../models/Pit";
-import Population from "../models/population";
+import Population from "../models/Population";
 
 import Block from "./Block";
 import Berry from "./Berry";

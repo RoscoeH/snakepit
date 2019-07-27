@@ -1,4 +1,4 @@
-import { Snake } from './models/snake';
+import Snake from "./models/Snake";
 
 export enum Direction {
   NORTH,
@@ -8,8 +8,8 @@ export enum Direction {
 }
 
 export interface IPosition {
-  x: number,
-  y: number
+  x: number;
+  y: number;
 }
 
 export interface ILevel {
@@ -20,7 +20,7 @@ export interface ILevel {
 
 export interface IBerry extends IPosition {
   nutritionalValue: number;
-  color: string,
+  color: string;
   effect(snake: Snake): void;
 }
 
