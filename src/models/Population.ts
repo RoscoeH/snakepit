@@ -1,7 +1,7 @@
 import { observable, action, computed } from "mobx";
 
-import { Snake } from "./Snake";
-import { Pit } from "./Pit";
+import Snake from "./Snake";
+import Pit from "./Pit";
 import { IPosition, Direction, IBerry, IEgg, IDna } from "../types";
 import {
   positionsEqual,
@@ -31,7 +31,7 @@ interface IHistory {
   eggs: number;
 }
 
-export class Population {
+export default class Population {
   size = 16;
   stepEnergy = 0.02;
   berryCount = 10;

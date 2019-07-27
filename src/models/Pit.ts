@@ -1,13 +1,13 @@
-import { computed } from 'mobx';
+import { computed } from "mobx";
 
-import { ILevel, IPosition } from '../types';
+import { ILevel, IPosition } from "../types";
 
-export class Pit {
+export default class Pit {
   cellSize = 64;
   cellHeight = 16;
   width: number = 20;
   height: number = 20;
-  blockGrid: string = '';
+  blockGrid: string = "";
 
   constructor(level: ILevel) {
     this.parseLevel(level);
@@ -21,28 +21,28 @@ export class Pit {
     return this.height * this.cellSize;
   }
 
-  @computed get blocks (): Array<IPosition> {
-    const blocks: Array<IPosition> = []
-    const rows = this.blockGrid.split('\n')
+  @computed get blocks(): Array<IPosition> {
+    const blocks: Array<IPosition> = [];
+    const rows = this.blockGrid.split("\n");
 
     for (let i = 0; i < rows.length; i++) {
-      const row = rows[i]
+      const row = rows[i];
 
       for (let j = 0; j < row.length; j++) {
-        if (row[j] === '#') {
+        if (row[j] === "#") {
           blocks.push({
             x: j,
             y: i
-          })
+          });
         }
       }
     }
 
-    return blocks
+    return blocks;
   }
 
   blockAt(position: IPosition): boolean {
-    return this.blockGrid.split('\n')[position.y][position.x] === '#';
+    return this.blockGrid.split("\n")[position.y][position.x] === "#";
   }
 
   parseLevel(level: ILevel) {

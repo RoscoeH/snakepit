@@ -18,10 +18,10 @@
     "react-dom": "16.8.6",
     "recharts": "^1.0.0-alpha.6",
     "reflect-metadata": "^0.1.8",
+    "terser": "^4.1.2",
     "tslib": "^1.7.1",
     "tslint": "^5.8.0",
     "typescript": "3.5.3",
-    "uglify-es": "^3.3.9",
     "uuid": "^3.1.0"
   },
   "devDependencies": {}
