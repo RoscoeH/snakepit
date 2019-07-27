@@ -13,7 +13,7 @@ import {
 } from "recharts";
 
 import * as level from "../maps/level.json";
-import Pit from "../models/pit";
+import Pit from "../models/Pit";
 import Population from "../models/population";
 
 import Block from "./Block";
