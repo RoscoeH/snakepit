@@ -12,3 +12,4 @@ out.js
 dist/
 sourcemaps.js.map
 .fusebox
+yarn-error.log
