@@ -66,6 +66,10 @@ export default class Population {
     return this.speed < this.maxSpeed ? this.speed * 2 : 1
   }
 
+  @computed get isExtinct() {
+    return this.population.length === 0 && this.eggs.length === 0
+  }
+
   @action clear() {
     this.time = 0
     this.population = []
@@ -123,7 +127,9 @@ export default class Population {
       this.generateRandomFood(1, null)
     }
 
-    this.time++
+    if (!this.isExtinct) {
+      this.time++
+    }
   }
 
   @action updateEggs() {
