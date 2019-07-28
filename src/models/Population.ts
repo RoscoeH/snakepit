@@ -14,6 +14,7 @@ import {
   uuid
 } from '../utils'
 import { LongBerry, ShortBerry, DeathBerry } from './Berries'
+import shuffle from '../utils/shuffle'
 
 const directions = [
   Direction.NORTH,
@@ -32,7 +33,7 @@ interface IHistory {
 }
 
 export default class Population {
-  size = 16
+  size = 8
   stepEnergy = 0.02
   berryCount = 10
   berrySpawnRate = 0.5
@@ -353,9 +354,10 @@ export default class Population {
 
   findEmptyPositionAround(position: IPosition): IPosition {
     let emptyPos: IPosition = null
+    const shuffledDirections = shuffle(directions)
 
-    for (let i = 0; i < directions.length; i++) {
-      const direction = directions[i]
+    for (let i = 0; i < shuffledDirections.length; i++) {
+      const direction = shuffledDirections[i]
       const maybeEmptyPos = positionInDirection(position, direction)
 
       if (!this.cellOccupied(maybeEmptyPos) && !this.berryAt(maybeEmptyPos)) {
