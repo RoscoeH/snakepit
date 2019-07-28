@@ -22,7 +22,7 @@ class App extends Component {
       <div className="app">
         <div className="header">
           <div className="box" />
-          <h1 className="title">Snakepit</h1>{' '}
+          <h1 className="title">snakepit</h1>{' '}
           <span className={`box align-right fade-in-out ${visible()} `}>
             {population.time}
           </span>
