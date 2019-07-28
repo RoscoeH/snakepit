@@ -45,7 +45,7 @@ class App extends Component {
           />
 
           {/* Gridlines */}
-          {Array.from(Array(pit.width)).map(
+          {/* {Array.from(Array(pit.width)).map(
             (n, i) =>
               i !== 0 && (
                 <line
@@ -74,7 +74,7 @@ class App extends Component {
                   y2={i * pit.cellSize + pit.cellHeight}
                 />
               )
-          )}
+          )} */}
           <g transform="translate(0 16)">
             {/* Blocks */}
             {pit.blocks.map((block, index) => (

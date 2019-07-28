@@ -1,7 +1,7 @@
 import { observable, computed, action } from 'mobx'
+import lerp from '@sunify/lerp-color'
 import { IPosition, IDna, Direction } from '../types'
-
-import { randomFromInterval, positionInDirection, lerpColor } from '../utils'
+import { randomFromInterval, positionInDirection } from '../utils'
 import Pit from './Pit'
 
 export default class Snake {
@@ -27,7 +27,14 @@ export default class Snake {
   }
 
   @computed get color(): string {
-    return lerpColor('#A93831', /*'#fc5449',*/ '#bdF271', this.health)
+    return lerp(
+      '#ff0000',
+      '#ff1e82',
+      '#f8ff11',
+      '#bdF271',
+      '#29D9C2',
+      this.health / 1
+    )
   }
 
   @computed get head(): IPosition {
