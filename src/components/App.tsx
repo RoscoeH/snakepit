@@ -1,28 +1,15 @@
 import * as React from 'react'
 import { Component } from 'react'
 import { observer } from 'mobx-react'
-import {
-  LineChart,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  Line,
-  ResponsiveContainer
-} from 'recharts'
 
-import * as level from '../maps/level.json'
-import Pit from '../models/Pit'
-import Population from '../models/Population'
+import { pit } from '../models/Pit'
+import { population } from '../models/Population'
 
+import Toolbar from './Toolbar'
 import Block from './Block'
 import Berry from './Berry'
 import Snake from './Snake'
 import Egg from './Egg'
-
-const pit = new Pit(level)
-const population = new Population(pit)
 
 @observer
 class App extends Component {
@@ -37,7 +24,6 @@ class App extends Component {
           viewBox={`0 0 ${pit.canvasWidth} ${pit.canvasHeight +
             pit.cellHeight}`}
           preserveAspectRatio="xMidYMin meet"
-          onClick={population.start} //population.step()}
         >
           {/* Background */}
           <rect
@@ -118,19 +104,7 @@ class App extends Component {
             ))}
           </g>
         </svg>
-        {/* <div
-          className={`charts ${population.history.length < 4 ? 'hidden' : ''}`}
-        >
-          <ResponsiveContainer width="100%" height={256}>
-            <LineChart
-              data={population.history.slice()}
-              margin={{ top: 40, right: 0, left: 0, bottom: 0 }}
-            >
-              <Line dataKey="population" stroke="#bdF271" />
-              <Line dataKey="eggs" stroke="white" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div> */}
+        <Toolbar />
       </div>
     )
   }

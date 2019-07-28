@@ -1,7 +1,7 @@
 import { observable, action, computed } from 'mobx'
 
 import Snake from './Snake'
-import Pit from './Pit'
+import Pit, { pit } from './Pit'
 import { IPosition, Direction, IBerry, IEgg, IDna } from '../types'
 import {
   positionsEqual,
@@ -42,19 +42,17 @@ export default class Population {
   adultLength = 3
   mutationRate = 0.05
   time = 0
+  interval: number
 
   @observable population: Snake[] = []
   @observable berries: IBerry[] = []
   @observable eggs: IEgg[] = []
   @observable history: IHistory[] = []
+  @observable isPlaying = false
 
   constructor(private pit: Pit) {
     this.generateRandomSnakes(this.size)
     this.generateRandomFood(this.berryCount, null)
-  }
-
-  start() {
-    setInterval(() => this.step(), 250)
   }
 
   @computed get deathberryCount() {
@@ -155,6 +153,16 @@ export default class Population {
         })
       }
     })
+  }
+
+  @action start() {
+    this.isPlaying = true
+    this.interval = setInterval(() => this.step(), 250)
+  }
+
+  @action stop() {
+    clearInterval(this.interval)
+    this.isPlaying = false
   }
 
   mutateDna(dna: IDna): IDna {
@@ -378,3 +386,5 @@ export default class Population {
     }
   }
 }
+
+export const population = new Population(pit)

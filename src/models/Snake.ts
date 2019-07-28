@@ -1,13 +1,13 @@
-import { observable, computed, action } from "mobx";
-import { IPosition, IDna, Direction } from "../types";
+import { observable, computed, action } from 'mobx'
+import { IPosition, IDna, Direction } from '../types'
 
-import { randomFromInterval, positionInDirection, lerpColor } from "../utils";
-import Pit from "./Pit";
+import { randomFromInterval, positionInDirection, lerpColor } from '../utils'
+import Pit from './Pit'
 
 export default class Snake {
-  dna: IDna;
-  @observable segments: Array<IPosition> = [];
-  @observable health = 1;
+  dna: IDna
+  @observable segments: Array<IPosition> = []
+  @observable health = 1
 
   constructor(
     public id: number | string,
@@ -15,7 +15,7 @@ export default class Snake {
     positions: Array<IPosition>,
     dna?: IDna
   ) {
-    positions.forEach(position => this.addToTail(position));
+    positions.forEach(position => this.addToTail(position))
 
     this.dna = dna || {
       snakeAttraction: randomFromInterval(-1, 1),
@@ -23,40 +23,40 @@ export default class Snake {
       shortberryAttraction: randomFromInterval(-1, 1),
       deathberryAttraction: randomFromInterval(-1, 1),
       eggRate: randomFromInterval(0, 0.05)
-    };
+    }
   }
 
   @computed get color(): string {
-    return lerpColor("#A93831", /*'#fc5449',*/ "#bdF271", this.health);
+    return lerpColor('#A93831', /*'#fc5449',*/ '#bdF271', this.health)
   }
 
   @computed get head(): IPosition {
-    return this.segments.length > 0 ? this.segments[0] : null;
+    return this.segments.length > 0 ? this.segments[0] : null
   }
 
   @computed get tail(): IPosition {
     return this.segments.length > 0
       ? this.segments[this.segments.length - 1]
-      : null;
+      : null
   }
 
   @computed get direction(): Direction {
     if (this.segments.length > 1) {
-      const segmentBeforeHead = this.segments[1];
-      const xDiff = this.head.x - segmentBeforeHead.x;
-      const yDiff = this.head.y - segmentBeforeHead.y;
+      const segmentBeforeHead = this.segments[1]
+      const xDiff = this.head.x - segmentBeforeHead.x
+      const yDiff = this.head.y - segmentBeforeHead.y
 
       if (xDiff < 0) {
-        return Direction.WEST;
+        return Direction.WEST
       } else if (xDiff > 0) {
-        return Direction.EAST;
+        return Direction.EAST
       } else if (yDiff < 0) {
-        return Direction.NORTH;
+        return Direction.NORTH
       } else if (yDiff > 0) {
-        return Direction.SOUTH;
+        return Direction.SOUTH
       }
     } else {
-      return null;
+      return null
     }
   }
 
@@ -66,28 +66,28 @@ export default class Snake {
         segment.x < 0 ||
         segment.x > this.pit.width - 1 ||
         (segment.y < 0 || segment.y > this.pit.height - 1)
-    );
+    )
   }
 
   @action addToHead(segmentPosition: IPosition): Snake {
-    this.segments.unshift(segmentPosition);
-    return this;
+    this.segments.unshift(segmentPosition)
+    return this
   }
 
   @action addToTail(segmentPosition: IPosition): Snake {
-    this.segments.push(segmentPosition);
-    return this;
+    this.segments.push(segmentPosition)
+    return this
   }
 
   @action removeFromTail(): Snake {
     if (this.segments.length > 2) {
-      this.segments.pop();
+      this.segments.pop()
     }
-    return this;
+    return this
   }
 
   @action move(direction: Direction): void {
-    const position = positionInDirection(this.head, direction);
+    const position = positionInDirection(this.head, direction)
     this.segments = this.segments.map((segment, index) => {
       return index === 0
         ? { ...segment, ...position }
@@ -95,7 +95,7 @@ export default class Snake {
             ...segment,
             x: this.segments[index - 1].x,
             y: this.segments[index - 1].y
-          };
-    });
+          }
+    })
   }
 }
