@@ -17,6 +17,7 @@
     "noEmitHelpers": true,
     "preserveConstEnums": true,
     "suppressImplicitAnyIndexErrors": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   }
 }

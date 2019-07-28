@@ -3,9 +3,9 @@ import { SFC } from 'react'
 import { observer } from 'mobx-react'
 
 import { population } from '../models/Population'
-import * as playIconSrc from '../img/play.svg'
-import * as pauseIconSrc from '../img/pause.svg'
-import * as resetIconSrc from '../img/reset.svg'
+import playIconSrc from '../img/play.svg'
+import pauseIconSrc from '../img/pause.svg'
+import resetIconSrc from '../img/reset.svg'
 
 function toggle() {
   if (population.isPlaying) {

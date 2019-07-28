@@ -1,8 +1,16 @@
 import { observable, computed, action } from 'mobx'
-import lerp from '@sunify/lerp-color'
+import interpolate from 'color-interpolate'
 import { IPosition, IDna, Direction } from '../types'
 import { randomFromInterval, positionInDirection } from '../utils'
 import Pit from './Pit'
+
+const colormap = interpolate([
+  '#ff0000',
+  '#ff1e82',
+  '#f8ff11',
+  '#bdF271',
+  '#29D9C2'
+])
 
 export default class Snake {
   dna: IDna
@@ -27,14 +35,7 @@ export default class Snake {
   }
 
   @computed get color(): string {
-    return lerp(
-      '#ff0000',
-      '#ff1e82',
-      '#f8ff11',
-      '#bdF271',
-      '#29D9C2',
-      this.health / 1
-    )
+    return colormap(this.health / 1)
   }
 
   @computed get head(): IPosition {
