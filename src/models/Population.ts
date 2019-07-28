@@ -41,12 +41,12 @@ export default class Population {
   eggHealth = 0.3
   adultLength = 3
   mutationRate = 0.05
-  time = 0
   intervalId: number
   intervalTimeInMilliseconds = 250
-  speed = 1
   maxSpeed = 32
 
+  @observable speed = 1
+  @observable time = 0
   @observable population: Snake[] = []
   @observable berries: IBerry[] = []
   @observable eggs: IEgg[] = []
@@ -60,6 +60,25 @@ export default class Population {
 
   @computed get deathberryCount() {
     return this.berries.filter(berry => berry instanceof DeathBerry).length
+  }
+
+  @computed get nextSpeed() {
+    return this.speed < this.maxSpeed ? this.speed * 2 : 1
+  }
+
+  @action clear() {
+    this.time = 0
+    this.population = []
+    this.berries = []
+    this.eggs = []
+    this.history = []
+  }
+
+  @action reset() {
+    this.stop()
+    this.clear()
+    this.generateRandomSnakes(this.size)
+    this.generateRandomFood(this.berryCount, null)
   }
 
   @action start() {
@@ -77,7 +96,7 @@ export default class Population {
 
   @action toggleSpeed() {
     this.stop()
-    this.speed = this.speed < this.maxSpeed ? this.speed * 2 : 1
+    this.speed = this.nextSpeed
     this.start()
   }
 
