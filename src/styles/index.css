@@ -16,7 +16,6 @@ h5,
 h6,
 button {
   font-family: 'Nunito', sans-serif;
-  color: #bdf271;
 }
 
 h1 {
@@ -28,10 +27,20 @@ body {
   padding: 0;
   font-family: sans-serif;
   background-color: #2f2933;
+  color: #bdf271;
+  font-size: 16px;
 }
 
 .title {
   text-align: center;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  width: 320px;
+  margin: 0 auto;
 }
 
 .pit {
@@ -62,12 +71,12 @@ body {
 
 .toolbar__button {
   box-sizing: border-box;
-  font-size: 16px;
-  color: #bdf271;
   width: 48px;
   height: 48px;
   border: none;
   background-color: #251c1b;
+  color: #bdf271;
+  font-size: 16px;
   border-radius: 8px;
   padding: 8px;
   outline: none;
@@ -87,4 +96,16 @@ body {
 
 .transparent {
   opacity: 0;
+}
+
+.align-right {
+  justify-self: right;
+}
+
+.box {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

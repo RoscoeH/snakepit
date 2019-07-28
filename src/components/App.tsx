@@ -11,12 +11,22 @@ import Berry from './Berry'
 import Snake from './Snake'
 import Egg from './Egg'
 
+function visible() {
+  return population.time > 0 ? '' : 'transparent'
+}
+
 @observer
 class App extends Component {
   render() {
     return (
       <div className="app">
-        <h1 className="title">Snakepit</h1>
+        <div className="header">
+          <div className="box" />
+          <h1 className="title">Snakepit</h1>{' '}
+          <span className={`box align-right fade-in-out ${visible()} `}>
+            {population.time}
+          </span>
+        </div>
         <svg
           className="pit"
           width={pit.canvasWidth}
