@@ -42,7 +42,10 @@ export default class Population {
   adultLength = 3
   mutationRate = 0.05
   time = 0
-  interval: number
+  intervalId: number
+  intervalTimeInMilliseconds = 250
+  speed = 1
+  maxSpeed = 32
 
   @observable population: Snake[] = []
   @observable berries: IBerry[] = []
@@ -57,6 +60,25 @@ export default class Population {
 
   @computed get deathberryCount() {
     return this.berries.filter(berry => berry instanceof DeathBerry).length
+  }
+
+  @action start() {
+    this.isPlaying = true
+    this.intervalId = setInterval(
+      () => this.step(),
+      this.intervalTimeInMilliseconds / this.speed
+    )
+  }
+
+  @action stop() {
+    clearInterval(this.intervalId)
+    this.isPlaying = false
+  }
+
+  @action toggleSpeed() {
+    this.stop()
+    this.speed = this.speed < this.maxSpeed ? this.speed * 2 : 1
+    this.start()
   }
 
   @action step() {
@@ -153,16 +175,6 @@ export default class Population {
         })
       }
     })
-  }
-
-  @action start() {
-    this.isPlaying = true
-    this.interval = setInterval(() => this.step(), 250)
-  }
-
-  @action stop() {
-    clearInterval(this.interval)
-    this.isPlaying = false
   }
 
   mutateDna(dna: IDna): IDna {

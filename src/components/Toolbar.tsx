@@ -6,18 +6,29 @@ import { population } from '../models/Population'
 import * as playIconSrc from '../img/play.svg'
 import * as pauseIconSrc from '../img/pause.svg'
 
+function toggle() {
+  if (population.isPlaying) {
+    population.stop()
+  } else {
+    population.start()
+  }
+}
+
 const Toolbar: SFC = () => {
   return (
     <div className="toolbar">
-      {population.isPlaying ? (
-        <button className="toolbar__button" onClick={() => population.stop()}>
-          <img src={pauseIconSrc} className="toolbar__icon" />
-        </button>
-      ) : (
-        <button className="toolbar__button" onClick={() => population.start()}>
-          <img src={playIconSrc} className="toolbar__icon" />
-        </button>
-      )}
+      <button className="toolbar__button" onClick={toggle}>
+        <img
+          src={population.isPlaying ? pauseIconSrc : playIconSrc}
+          className="toolbar__icon"
+        />
+      </button>
+      <button
+        className="toolbar__button"
+        onClick={() => population.toggleSpeed()}
+      >
+        {`×${population.speed}`}
+      </button>
     </div>
   )
 }

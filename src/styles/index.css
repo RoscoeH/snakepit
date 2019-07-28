@@ -56,8 +56,13 @@ body {
   padding: 16px;
 }
 
+.toolbar > *:not(:last-child) {
+  margin-right: 16px;
+}
+
 .toolbar__button {
   box-sizing: border-box;
+  font-size: 16px;
   color: #bdf271;
   width: 48px;
   height: 48px;
