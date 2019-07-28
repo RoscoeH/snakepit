@@ -1,6 +1,6 @@
-import * as React from "react";
-import { Component } from "react";
-import { observer } from "mobx-react";
+import * as React from 'react'
+import { Component } from 'react'
+import { observer } from 'mobx-react'
 import {
   LineChart,
   XAxis,
@@ -10,41 +10,34 @@ import {
   Legend,
   Line,
   ResponsiveContainer
-} from "recharts";
+} from 'recharts'
 
-import * as level from "../maps/level.json";
-import Pit from "../models/Pit";
-import Population from "../models/Population";
+import * as level from '../maps/level.json'
+import Pit from '../models/Pit'
+import Population from '../models/Population'
 
-import Block from "./Block";
-import Berry from "./Berry";
-import Snake from "./Snake";
-import Egg from "./Egg";
+import Block from './Block'
+import Berry from './Berry'
+import Snake from './Snake'
+import Egg from './Egg'
 
-const pit = new Pit(level);
-const population = new Population(pit);
-
-const data = [
-  { name: "Page A", uv: 400, pv: 2400, amt: 2400 },
-  { name: "Page B", uv: 300, pv: 4567, amt: 2400 },
-  { name: "Page C", uv: 300, pv: 1398, amt: 2400 },
-  { name: "Page D", uv: 200, pv: 9800, amt: 2400 },
-  { name: "Page E", uv: 278, pv: 3908, amt: 2400 },
-  { name: "Page F", uv: 189, pv: 4800, amt: 2400 }
-];
+const pit = new Pit(level)
+const population = new Population(pit)
 
 @observer
 class App extends Component {
   render() {
     return (
       <div className="app">
+        <h1 className="title">Snakepit</h1>
         <svg
           className="pit"
           width={pit.canvasWidth}
           height={pit.canvasHeight}
           viewBox={`0 0 ${pit.canvasWidth} ${pit.canvasHeight +
             pit.cellHeight}`}
-          onClick={() => setInterval(() => population.step(), 500)} //population.step()}
+          preserveAspectRatio="xMidYMin meet"
+          onClick={population.start} //population.step()}
         >
           {/* Background */}
           <rect
@@ -125,8 +118,8 @@ class App extends Component {
             ))}
           </g>
         </svg>
-        <div
-          className={`charts ${population.history.length < 4 ? "hidden" : ""}`}
+        {/* <div
+          className={`charts ${population.history.length < 4 ? 'hidden' : ''}`}
         >
           <ResponsiveContainer width="100%" height={256}>
             <LineChart
@@ -134,16 +127,13 @@ class App extends Component {
               margin={{ top: 40, right: 0, left: 0, bottom: 0 }}
             >
               <Line dataKey="population" stroke="#bdF271" />
-              {/* <Line dataKey="longBerries" stroke="#5BBF54" /> */}
-              {/* <Line dataKey="shortBerries" stroke="#51B7F8" /> */}
-              {/* <Line dataKey="deathBerries" stroke="#FC5449" /> */}
               <Line dataKey="eggs" stroke="white" />
             </LineChart>
           </ResponsiveContainer>
-        </div>
+        </div> */}
       </div>
-    );
+    )
   }
 }
 
-export default App;
+export default App

@@ -8,6 +8,17 @@ body,
   flex-direction: column;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Nunito', sans-serif;
+  font-size: 32px;
+  color: #bdf271;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -15,10 +26,12 @@ body {
   background-color: #2f2933;
 }
 
+.title {
+  text-align: center;
+}
+
 .pit {
   width: 100%;
-  max-width: 640px;
-  margin: 0 auto;
 }
 
 .charts {
