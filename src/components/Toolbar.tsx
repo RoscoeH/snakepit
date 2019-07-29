@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { SFC } from 'react'
+import { SFC, useState } from 'react'
 import { observer } from 'mobx-react'
 
 import { population } from '../models/Population'
@@ -15,46 +15,26 @@ function toggle() {
   }
 }
 
-function resetButtonVisibility() {
-  return population.isPlaying || population.isExtinct ? '' : 'transparent'
-}
+const Toolbar: SFC = () => (
+  <div className="toolbar">
+    <button className="toolbar__button" onClick={() => population.reset()}>
+      <img src={resetIconSrc} className="toolbar__icon" />
+    </button>
 
-function pauseButtonVisibility() {
-  return !population.isExtinct ? '' : 'transparent'
-}
+    <button className="toolbar__button" onClick={toggle}>
+      <img
+        src={population.isPlaying ? pauseIconSrc : playIconSrc}
+        className="toolbar__icon"
+      />
+    </button>
 
-function speedButtonVisibility() {
-  return population.isPlaying ? '' : 'transparent'
-}
-
-const Toolbar: SFC = () => {
-  return (
-    <div className="toolbar">
-      <button
-        className={`toolbar__button fade-in-out ${resetButtonVisibility()}`}
-        onClick={() => population.reset()}
-      >
-        <img src={resetIconSrc} className="toolbar__icon" />
-      </button>
-
-      <button
-        className={`toolbar__button fade-in-out ${pauseButtonVisibility()}`}
-        onClick={toggle}
-      >
-        <img
-          src={population.isPlaying ? pauseIconSrc : playIconSrc}
-          className="toolbar__icon"
-        />
-      </button>
-
-      <button
-        className={`toolbar__button fade-in-out ${speedButtonVisibility()}`}
-        onClick={() => population.toggleSpeed()}
-      >
-        {`×${population.speed}`}
-      </button>
-    </div>
-  )
-}
+    <button
+      className="toolbar__button"
+      onClick={() => population.toggleSpeed()}
+    >
+      {`×${population.speed}`}
+    </button>
+  </div>
+)
 
 export default observer(Toolbar)

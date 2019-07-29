@@ -90,14 +90,6 @@ body {
   height: 32px;
 }
 
-.fade-in-out {
-  transition: opacity 0.5s ease-out;
-}
-
-.transparent {
-  opacity: 0;
-}
-
 .align-right {
   justify-self: right;
 }
