@@ -12,8 +12,10 @@ import Snake from './Snake'
 import Egg from './Egg'
 
 function visible() {
-  return population.time > 0 ? '' : 'transparent'
+  return population.time > 0 || population.isExtinct ? '' : 'transparent'
 }
+
+const BORDER_INSET = 32
 
 @observer
 class App extends Component {
@@ -35,84 +37,39 @@ class App extends Component {
             pit.cellHeight}`}
           preserveAspectRatio="xMidYMin meet"
         >
-          {/* Background */}
           <rect
-            x={0}
-            y={0}
-            width={pit.canvasWidth}
-            height={pit.canvasHeight + pit.cellHeight}
-            fill="#2f2933"
+            x={BORDER_INSET}
+            y={BORDER_INSET}
+            width={pit.canvasWidth - BORDER_INSET}
+            height={pit.canvasHeight - BORDER_INSET}
+            rx={BORDER_INSET * 2}
+            stroke="#fff"
+            opacity="0.1"
+            strokeWidth="8"
+            fill="none"
           />
+          {population.berries.map((berry, i) => (
+            <Berry
+              key={i}
+              x={berry.x}
+              y={berry.y}
+              size={pit.cellSize}
+              color={berry.color}
+            />
+          ))}
 
-          {/* Gridlines */}
-          {/* {Array.from(Array(pit.width)).map(
-            (n, i) =>
-              i !== 0 && (
-                <line
-                  key={i}
-                  stroke="white"
-                  strokeWidth="3"
-                  opacity="0.25"
-                  x1={i * pit.cellSize}
-                  y1={pit.cellHeight}
-                  x2={i * pit.cellSize}
-                  y2={pit.height * pit.cellSize + pit.cellHeight}
-                />
-              )
-          )}
-          {Array.from(Array(pit.height)).map(
-            (n, i) =>
-              i !== 0 && (
-                <line
-                  key={i}
-                  stroke="white"
-                  strokeWidth="3"
-                  opacity="0.25"
-                  x1={0}
-                  y1={i * pit.cellSize + pit.cellHeight}
-                  x2={pit.width * pit.cellSize}
-                  y2={i * pit.cellSize + pit.cellHeight}
-                />
-              )
-          )} */}
-          <g transform="translate(0 16)">
-            {/* Blocks */}
-            {pit.blocks.map((block, index) => (
-              <Block
-                key={index}
-                x={block.x}
-                y={block.y}
-                size={pit.cellSize}
-                height={pit.cellHeight}
-              />
-            ))}
-
-            {/* Berries */}
-            {population.berries.map((berry, i) => (
-              <Berry
-                key={i}
-                x={berry.x}
-                y={berry.y}
-                size={pit.cellSize}
-                color={berry.color}
-              />
-            ))}
-
-            {/* Eggs */}
-            {population.eggs.map((egg, i) => (
-              <Egg key={i} x={egg.x} y={egg.y} size={pit.cellSize} />
-            ))}
-
-            {/* Snakes */}
-            {population.population.map((snake, i) => (
-              <Snake
-                key={i}
-                size={pit.cellSize}
-                segments={snake.segments}
-                color={snake.color}
-              />
-            ))}
-          </g>
+          {population.eggs.map((egg, i) => (
+            <Egg key={i} x={egg.x} y={egg.y} size={pit.cellSize} />
+          ))}
+          {population.population.map((snake, i) => (
+            <Snake
+              key={i}
+              size={pit.cellSize}
+              segments={snake.segments}
+              color={snake.color}
+            />
+          ))}
+          {/* </g> */}
         </svg>
         <Toolbar />
       </div>
