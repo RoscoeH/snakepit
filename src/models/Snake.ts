@@ -6,16 +6,18 @@ import Pit from './Pit'
 
 const colormap = interpolate([
   '#ff0000',
-  '#ff1e82',
+  '#F28A4A',
   '#f8ff11',
   '#bdF271',
-  '#29D9C2'
+  '#29D9C2',
+  '#2952d9',
+  '#E1A3F7'
 ])
 
 export default class Snake {
   dna: IDna
   @observable segments: Array<IPosition> = []
-  @observable health = 1
+  @observable health = 2
 
   constructor(
     public id: number | string,
