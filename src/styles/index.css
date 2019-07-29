@@ -8,6 +8,7 @@ body,
   flex-direction: column;
 }
 
+.box,
 h1,
 h2,
 h3,
@@ -38,7 +39,7 @@ body {
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   width: 320px;
   margin: 0 auto;
 }
@@ -100,4 +101,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 32px;
+  font-weight: 400;
 }

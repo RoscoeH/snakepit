@@ -11,10 +11,6 @@ import Berry from './Berry'
 import Snake from './Snake'
 import Egg from './Egg'
 
-function visible() {
-  return population.time > 0 || population.isExtinct ? '' : 'transparent'
-}
-
 const BORDER_INSET = 32
 
 @observer
@@ -25,7 +21,9 @@ class App extends Component {
         <div className="header">
           <div className="box" />
           <h1 className="title">snakepit</h1>{' '}
-          <span className={`box align-right fade-in-out ${visible()} `}>
+          <span
+            className={`box align-right ${population.time > 0 ? '' : 'hidden'}`}
+          >
             {population.time}
           </span>
         </div>
