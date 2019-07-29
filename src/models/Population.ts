@@ -128,8 +128,10 @@ export default class Population {
       this.generateRandomFood(1, null)
     }
 
-    if (!this.isExtinct) {
-      this.time++
+    this.time++
+
+    if (this.isExtinct) {
+      this.stop()
     }
   }
 

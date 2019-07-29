@@ -15,21 +15,32 @@ function toggle() {
   }
 }
 
-function visible() {
-  return population.time > 0 ? '' : 'transparent'
+function resetButtonVisibility() {
+  return population.isPlaying || population.isExtinct ? '' : 'transparent'
+}
+
+function pauseButtonVisibility() {
+  return !population.isExtinct ? '' : 'transparent'
+}
+
+function speedButtonVisibility() {
+  return population.isPlaying ? '' : 'transparent'
 }
 
 const Toolbar: SFC = () => {
   return (
     <div className="toolbar">
       <button
-        className={`toolbar__button fade-in-out ${visible()}`}
+        className={`toolbar__button fade-in-out ${resetButtonVisibility()}`}
         onClick={() => population.reset()}
       >
         <img src={resetIconSrc} className="toolbar__icon" />
       </button>
 
-      <button className="toolbar__button" onClick={toggle}>
+      <button
+        className={`toolbar__button fade-in-out ${pauseButtonVisibility()}`}
+        onClick={toggle}
+      >
         <img
           src={population.isPlaying ? pauseIconSrc : playIconSrc}
           className="toolbar__icon"
@@ -37,7 +48,7 @@ const Toolbar: SFC = () => {
       </button>
 
       <button
-        className={`toolbar__button fade-in-out ${visible()}`}
+        className={`toolbar__button fade-in-out ${speedButtonVisibility()}`}
         onClick={() => population.toggleSpeed()}
       >
         {`×${population.speed}`}
