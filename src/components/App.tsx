@@ -40,8 +40,8 @@ class App extends Component {
           <rect
             x={BORDER_INSET}
             y={BORDER_INSET}
-            width={pit.canvasWidth - BORDER_INSET}
-            height={pit.canvasHeight - BORDER_INSET}
+            width={pit.canvasWidth - BORDER_INSET * 2}
+            height={pit.canvasHeight - BORDER_INSET * 2}
             rx={BORDER_INSET * 2}
             stroke="#fff"
             opacity="0.1"
